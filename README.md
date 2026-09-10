@@ -5,4 +5,4 @@ Jake and I hope to build some sort of game that has some educational value.
 
 ## Labs
 
-- Lab 2 - connected this repository to my laptop
+- Lab 2 - edited this line in the browser
