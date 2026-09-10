@@ -2,3 +2,7 @@
 My work for SSW 215, Fall 2026
 
 Jake and I hope to build some sort of game that has some educational value.
+
+## Labs
+
+- Lab 2 - connected this repository to my laptop
