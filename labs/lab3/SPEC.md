@@ -18,6 +18,7 @@ this bio: "I am excited to learn more about current software engineering practic
 - Projects section with id="projects": lists these items: A 3D game that uses only built in frontend commands, A RPG style game with selfmade graphics, A game that utilizes a backend to allow for smoother gameplay.
 - Social link: GitHub (https://github.com/EnlightenedSnake) MUST open in a new tab
 (target="_blank").
+- Headings MUST be underlined
 
 ## 4. Acceptance Checklist
 - [X] Valid semantic HTML5: the page uses <header>, <main>, and <footer>.
