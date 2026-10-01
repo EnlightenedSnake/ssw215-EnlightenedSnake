@@ -114,7 +114,7 @@ h3 {
 .card-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.0rem;  /* hand-edited by JM */
 }
 
 .card {
@@ -125,7 +125,10 @@ h3 {
   padding: 1.5rem;
   box-shadow: 0 0.5rem 1.25rem rgba(16, 24, 40, 0.08);
 }
-
+/* hand-edited by JM */
+.featured {
+  background:#b1ceff;
+}
 .social {
   background: #e7edf5;
   padding: 1.5rem 0;
