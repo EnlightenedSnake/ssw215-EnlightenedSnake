@@ -7,17 +7,21 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <header class="hero">
-      <div class="container">
-        <div class="hero-content">
+    <header>
+      <nav aria-label="Main navigation">
+        <a href="#projects">Projects</a>
+        <a href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+
+      <section class="hero">
+        <div class="container hero-layout">
           <img
             class="avatar"
             src="./assets/avatar.png"
-            width="220"
-            height="220"
             alt="Jake Mikruk"
           />
-          <div class="text-content">
+
+          <div class="hero-copy">
             <h1>Jake Mikruk</h1>
             <p class="subtitle">
               I am a software engineering undergraduate studying at Stevens
@@ -32,26 +36,35 @@
             <a class="button" href="#projects">See my projects</a>
           </div>
         </div>
-      </div>
+      </section>
     </header>
 
     <main>
       <section id="projects" class="projects">
         <div class="container">
           <h2>Projects</h2>
-          <ul>
-            <li>A 3D game that uses only built in frontend commands</li>
-            <li>A RPG style game with selfmade graphics</li>
-            <li>A game that utilizes a backend to allow for smoother gameplay</li>
-          </ul>
+          <div class="card-grid">
+            <article class="card">
+              <h3>A 3D game that uses only built in frontend commands</h3>
+            </article>
+            <article class="card">
+              <h3>A RPG style game with selfmade graphics</h3>
+            </article>
+            <article class="card">
+              <h3>A game that utilizes a backend to allow for smoother gameplay</h3>
+            </article>
+          </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <a href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
-      </div>
+    <footer>
+      <section class="social">
+        <div class="container">
+          <h2>GitHub</h2>
+          <a href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </section>
     </footer>
   </body>
 </html>
