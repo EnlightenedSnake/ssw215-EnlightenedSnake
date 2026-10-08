@@ -3,14 +3,14 @@ const projectCount = document.getElementById('project-count');
 const cards = Array.from(document.querySelectorAll('.card'));
 
 function updateProjectList() {
-  const query = filterInput.value.trim().toLowerCase();
+  const query = filterInput.value.trim().toLowerCase(); // hand-edited by JM
   let visibleCount = 0;
 
   cards.forEach((card) => {
-    const text = card.textContent.toLowerCase();
+    const text = card.textContent.toLowerCase(); //hand-edited by JM    
     const matches = query === '' || text.includes(query);
 
-    card.classList.toggle('hidden', !matches);
+    card.classList.toggle('is-hidden', !matches);
 
     if (matches) {
       visibleCount += 1;

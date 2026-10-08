@@ -225,7 +225,7 @@ h3 {
   box-shadow: 0 0.5rem 1.25rem var(--shadow);
 }
 
-.hidden {
+.is-hidden {
   display: none;
 }
 
