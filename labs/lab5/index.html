@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jake Mikruk | Portfolio</title>
     <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js" defer></script>
   </head>
   <body>
     <header>
@@ -13,16 +14,12 @@
         <a href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
       </nav>
 
-      <section class="hero">
+      <section class="hero" aria-labelledby="hero-heading">
         <div class="container hero-layout">
-          <img
-            class="avatar"
-            src="./assets/avatar.png"
-            alt="Jake Mikruk"
-          />
+          <img class="avatar" src="./assets/avatar.png" alt="Jake Mikruk" />
 
           <div class="hero-copy">
-            <h1>Jake Mikruk</h1>
+            <h1 id="hero-heading">Jake Mikruk</h1>
             <p class="subtitle">
               I am a software engineering undergraduate studying at Stevens
               Institute of Technology.
@@ -45,9 +42,17 @@
     </header>
 
     <main>
-      <section id="projects" class="projects">
+      <section class="projects" id="projects" aria-labelledby="projects-heading">
         <div class="container">
-          <h2>Projects</h2>
+          <h2 id="projects-heading">Projects</h2>
+
+          <div class="filter-row">
+            <label class="filter-label" for="filter-input">Filter projects</label>
+            <input class="filter-input" id="filter-input" type="text" aria-label="Filter projects" />
+          </div>
+
+          <p class="project-count" id="project-count" aria-live="polite">Showing 3 of 3 projects</p>
+
           <div class="card-grid">
             <article class="card">
               <h3>A 3D game that uses only built in frontend commands</h3>
@@ -55,7 +60,7 @@
             <article class="card">
               <h3>A RPG style game with selfmade graphics</h3>
             </article>
-            <article class="card featured"> <!-- hand-edited by JM -->
+            <article class="card">
               <h3>A game that utilizes a backend to allow for smoother gameplay</h3>
             </article>
           </div>
@@ -64,9 +69,9 @@
     </main>
 
     <footer>
-      <section class="social">
+      <section class="social" aria-labelledby="social-heading">
         <div class="container">
-          <h2>GitHub</h2>
+          <h2 id="social-heading">GitHub</h2>
           <a href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
         </div>
       </section>
