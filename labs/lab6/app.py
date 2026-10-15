@@ -17,8 +17,14 @@ projects_db = [
     },
     {
         "id": 3,
-        "title": "A really really bad game that utilizes a backend to allow for smoother gameplay",
+        "title": "A bad game that utilizes a backend to allow for smoother gameplay",
         "description": "A game using a backend to support smoother gameplay.",
+        "likes": 0,
+    },
+    { #hand-edited by JM
+        "id": 4,
+        "title": "A chess application that uses AI to find the best move",
+        "description": "A chess application that utilizes AI to determine the best moves.",
         "likes": 0,
     },
 ]
