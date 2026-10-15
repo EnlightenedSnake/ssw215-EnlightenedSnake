@@ -1,6 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 
-:root {
+.page {
   --page-bg: #f4f7fb;
   --panel-bg: #dfeaf7;
   --surface: #ffffff;
@@ -12,13 +12,6 @@
   --border: #dbe2ea;
   --accent: #8ecae6;
   --shadow: rgba(16, 24, 40, 0.08);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background: var(--page-bg);
@@ -27,20 +20,16 @@ body {
   overflow-x: hidden;
 }
 
-img {
+.avatar {
   max-width: 100%;
   display: block;
 }
 
-a {
-  color: var(--primary);
-}
-
-header {
+.site-header {
   background: var(--panel-bg);
 }
 
-nav {
+.site-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,7 +39,7 @@ nav {
   gap: 1rem;
 }
 
-nav a {
+.nav-link {
   color: var(--primary);
   font-weight: 700;
   text-decoration: none;
@@ -85,25 +74,23 @@ nav a {
   max-width: 38rem;
 }
 
-h1,
-h2,
-h3 {
+.heading {
   margin: 0 0 0.75rem;
   text-decoration: underline;
   text-decoration-thickness: 0.125rem;
   text-underline-offset: 0.5rem;
 }
 
-h1 {
-  font-size: clamp(2.2rem, 5vw, 4rem);
+.heading-primary {
+  font-size: 3.25rem;
   line-height: 1.1;
 }
 
-h2 {
-  font-size: clamp(1.7rem, 3vw, 2.2rem);
+.heading-section {
+  font-size: 2rem;
 }
 
-h3 {
+.heading-card {
   font-size: 1.1rem;
   line-height: 1.5;
   margin-bottom: 0;
@@ -225,7 +212,7 @@ h3 {
   box-shadow: 0 0.5rem 1.25rem var(--shadow);
 }
 
-.is-hidden {
+.hidden {
   display: none;
 }
 
@@ -234,13 +221,13 @@ h3 {
   padding: 1.5rem 0;
 }
 
-.social a {
+.social-link {
   color: var(--primary);
   text-decoration: none;
   font-weight: 700;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 48rem) {
   .hero {
     padding: 3rem 0;
   }
