@@ -60,7 +60,12 @@
             <article class="card" data-project-id="{{ project.id }}">
               <h3 class="heading heading-card">{{ project.title }}</h3>
               <p>{{ project.description }}</p>
-              <p class="project-likes">Likes: {{ project.likes }}</p>
+              <!-- hand-edited by JM -->
+              {% if project.likes > 10 %}
+               <span class="badge">Trending</span>
+              {% endif %}
+              <p>Likes: <span class="like-count">{{ project.likes }}</span></p>
+              <button class="upvote-btn button" type="button">Upvote</button>
             </article>
             {% endfor %}
           </div>

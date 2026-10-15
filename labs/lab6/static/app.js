@@ -27,3 +27,34 @@ if (filterInput && projectCount && cards.length > 0) {
   filterInput.addEventListener('input', updateProjectList);
   updateProjectList();
 }
+
+cards.forEach((card) => {
+  const upvoteButton = card.querySelector('.upvote-btn');
+  const likeCount = card.querySelector('.like-count');
+
+  if (!upvoteButton || !likeCount) {
+    return;
+  }
+
+  upvoteButton.addEventListener('click', async () => {
+    upvoteButton.disabled = true;
+
+    try {
+      const response = await fetch(
+        `/api/projects/${card.dataset.projectId}/upvote`,
+        { method: 'POST' }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Upvote request failed with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      likeCount.textContent = result.likes;
+    } catch (error) {
+      console.error('Unable to upvote project:', error);
+    } finally {
+      upvoteButton.disabled = false;
+    }
+  });
+});

@@ -22,6 +22,9 @@ border-box; }`.
 - style.css and app.js MUST be linked with url_for('static', filename=...), never with a plain relative path.
 - No Jinja syntax ({{ }} or {% %}) may appear in static/app.js. External script files are never processed by Flask.
 - app.py MUST create the application with app = Flask(__name__), and MUST end with a block that runs it with debug=True when the file is executed directly.
+- The upvote route MUST accept POST only, and MUST declare its id parameter as <int:project_id>.
+- The upvote route MUST return jsonify(...), never render_template.
+- app.js MUST check response.ok before reading the response body.
 
 ## 3. UI Content & Interface Contract
 - Hero header: my full name "Jake Mikruk", the subtitle "I am a software engineering undergraduate studying at Stevens Institute of Technology.", and
@@ -49,17 +52,25 @@ visible to the console with console.log.
 - Each rendered card MUST carry the attribute data-project-id holding that project's id.
 - Visiting http://127.0.0.1:5000/ MUST serve the page, with one card per entry in projects_db.
 - The rendered cards MUST keep the same classes they had in Lab 5, so that the existing filter in app.js keeps working with no changes to app.js.
+- Each card MUST contain a button with class "upvote-btn" reading "Upvote", and an element with class "like-count" showing that project's likes.
+- Clicking Upvote MUST send a POST to /api/projects/<id>/upvote and update only the number on that card, with no page reload.
+- A project with more than 10 likes MUST show a "Trending" badge on its card.
 
 ## 4. Acceptance Checklist
-- [ ] Running app.py starts a server, and the page loads at http://127.0.0.1:5000/.
-- [ ] Every card on the page comes from the {% for %} loop — index.html contains no
+- [X] Running app.py starts a server, and the page loads at http://127.0.0.1:5000/.
+- [X] Every card on the page comes from the {% for %} loop — index.html contains no
 hardcoded card.
-- [ ] Each card carries data-project-id with that project's id.
-- [ ] Changing a title in app.py and reloading the page changes what I see.
-- [ ] The filter box still hides and shows cards, and I did not edit app.js to make that
+- [X] Each card carries data-project-id with that project's id.
+- [X] Changing a title in app.py and reloading the page changes what I see.
+- [X] The filter box still hides and shows cards, and I did not edit app.js to make that
 work.
-- [ ] The page is styled — style.css and app.js both loaded.
-- [ ] The DevTools Console shows no red errors.
+- [X] The page is styled — style.css and app.js both loaded.
+- [X] The DevTools Console shows no red errors.
+- [ ] Clicking Upvote raises the number on that card, and only that card, with no page
+reload.
+- [X] The Network tab shows the request returning JSON, not HTML.
+- [X] A project with more than 10 likes shows a Trending badge after the page is
+reloaded.
 
 ## 5. Audit Protocol
 - Inspect the generated code line by line with `git diff --staged` before committing.
