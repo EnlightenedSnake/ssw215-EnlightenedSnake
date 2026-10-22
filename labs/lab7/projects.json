@@ -22,5 +22,11 @@
     "title": "A chess application that uses AI to find the best move",
     "description": "A chess application that utilizes AI to determine the best moves.",
     "likes": 0
+  },
+  {
+    "id": 5,
+    "title": "Cool guy project",
+    "description": "",
+    "likes": 0
   }
 ]

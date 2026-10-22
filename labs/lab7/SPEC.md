@@ -29,6 +29,10 @@ border-box; }`.
 - The path to projects.json MUST be built from the location of app.py, not from a bare relative path.
 - Every route that changes a project MUST write the whole list back to projects.json before it returns a response.
 - projects.json MUST be written with json.dump(..., indent=2) so it stays readable in a diff.
+- The create-project route MUST accept POST only, at the path /api/projects.
+- The route MUST append the new project to projects json before it returns.
+- The new project's id MUST be one higher than the largest id already in the file.
+- A create request whose title is missing, or is empty once surrounding spaces are removed, MUST be rejected by the server with status code 400, and the rejection MUST happen before projects.json is opened.
 
 ## 3. UI Content & Interface Contract
 - Hero header: my full name "Jake Mikruk", the subtitle "I am a software engineering undergraduate studying at Stevens Institute of Technology.", and
@@ -61,6 +65,10 @@ visible to the console with console.log.
 - A project with more than 10 likes MUST show a "Trending" badge on its card.
 - app.py MUST read projects.json and pass the resulting list to the template, so the page shows whatever the file currently contains.
 - After a successful upvote, the new like count MUST be present in projects.json on disk.
+- Above the project list there MUST be a text input with id="new-title" and a button reading "Add project".
+- The input and the button MUST sit in their own block, outside the element that lays the project cards out, so the existing card layout is unchanged.
+- Clicking Add project MUST POST {"title": ...} to /api/projects, and the new card MUST appear without a page reload.
+- A successful create MUST return the new project as JSON with status code 201.
 
 ## 4. Acceptance Checklist
 - [X] The page still loads at http://127.0.0.1:5000/ and shows every project in
@@ -72,6 +80,12 @@ new count.
 - [X] Editing a title directly in projects.json and reloading the page changes what I
 see.
 - [X] The DevTools Console shows no red errors.
+- [X] Typing a title and clicking Add project adds a card without reloading the page.
+- [X] The project cards still lay out the way they did in Lab 6.
+- [X] The new project is in projects.json, and it is still there after a restart.
+- [X] The Network tab shows the create request returning 201.
+- [X] Submitting an empty title leaves projects.json unchanged, and the server answers
+400.
 
 ## 5. Audit Protocol
 - Inspect the generated code line by line with `git diff --staged` before committing.
