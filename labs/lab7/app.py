@@ -1,42 +1,32 @@
+import json
+from pathlib import Path
+
 from flask import Flask, jsonify, render_template, send_from_directory
 
 app = Flask(__name__)
 
-projects_db = [
-    {
-        "id": 1,
-        "title": "A 3D game that uses only built in frontend commands",
-        "description": "A 3D game built using only built-in frontend commands.",
-        "likes": 0,
-    },
-    {
-        "id": 2,
-        "title": "A RPG style game with selfmade graphics",
-        "description": "An RPG-style game featuring self-made graphics.",
-        "likes": 0,
-    },
-    {
-        "id": 3,
-        "title": "A bad game that utilizes a backend to allow for smoother gameplay",
-        "description": "A game using a backend to support smoother gameplay.",
-        "likes": 0,
-    },
-    { #hand-edited by JM
-        "id": 4,
-        "title": "A chess application that uses AI to find the best move",
-        "description": "A chess application that utilizes AI to determine the best moves.",
-        "likes": 0,
-    },
-]
+PROJECTS_FILE = Path(__file__).with_name("projects.json")
+
+
+def load_projects():
+    with PROJECTS_FILE.open(encoding="utf-8") as projects_file:
+        return json.load(projects_file)
+
+
+def save_projects(projects):
+    with PROJECTS_FILE.open("w", encoding="utf-8") as projects_file:
+        json.dump(projects, projects_file, indent=2)
+        projects_file.write("\n")
 
 
 @app.route("/")
 def index():
-    return render_template("index.html", projects=projects_db)
+    return render_template("index.html", projects=load_projects())
 
 
 @app.route("/api/projects/<int:project_id>/upvote", methods=["POST"])
 def upvote_project(project_id):
+    projects_db = load_projects()
     project = next(
         (project for project in projects_db if project["id"] == project_id),
         None,
@@ -45,6 +35,7 @@ def upvote_project(project_id):
         return jsonify({"error": "Project not found"}), 404
 
     project["likes"] += 1
+    save_projects(projects_db)
     return jsonify({"id": project_id, "likes": project["likes"]})
 
 
