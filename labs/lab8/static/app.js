@@ -38,6 +38,11 @@ function createProjectCard(project) {
   const description = document.createElement('p');
   description.textContent = project.description;
 
+  const author = document.createElement('p');
+  author.textContent = `Author: ${project.author}`;
+
+  card.append(title, description, author);
+
   if (project.likes > 10) {
     const badge = document.createElement('span');
     badge.className = 'badge';
@@ -57,7 +62,7 @@ function createProjectCard(project) {
   upvoteButton.type = 'button';
   upvoteButton.textContent = 'Upvote';
 
-  card.append(title, description, likes, upvoteButton);
+  card.append(likes, upvoteButton);
   return card;
 }
 
@@ -102,7 +107,7 @@ if (projectList) {
         badge = document.createElement('span');
         badge.className = 'badge';
         badge.textContent = 'Trending';
-        card.insertBefore(badge, card.children[2]);
+        card.insertBefore(badge, card.querySelector('.like-count').closest('p'));
       } else if (result.likes <= 10 && badge) {
         badge.remove();
       }

@@ -12,6 +12,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 PROJECTS_SEED_FILE = Path(__file__).with_name("projects_seed.json")
+SEEDED_AUTHOR_NAME = "Jake Mikruk"
+
+
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    projects = db.relationship("Project", backref="author")
 
 
 class Project(db.Model):
@@ -19,6 +26,7 @@ class Project(db.Model):
     title = db.Column(db.String(120), nullable=False, unique=True)
     description = db.Column(db.String(500), nullable=False, default="")
     likes = db.Column(db.Integer, default=0)
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=False)
 
     def to_dict(self):
         return {
@@ -26,12 +34,19 @@ class Project(db.Model):
             "title": self.title,
             "description": self.description,
             "likes": self.likes,
+            "author": self.author.name,
         }
 
 
 def init_seed_data():
     if db.session.query(Project.id).first() is not None:
         return
+
+    author = Author.query.filter_by(name=SEEDED_AUTHOR_NAME).first()
+    if author is None:
+        author = Author(name=SEEDED_AUTHOR_NAME)
+        db.session.add(author)
+        db.session.flush()
 
     with PROJECTS_SEED_FILE.open("r", encoding="utf-8") as seed_file:
         seed_projects = json.load(seed_file)
@@ -42,6 +57,7 @@ def init_seed_data():
             title=project["title"],
             description=project.get("description", ""),
             likes=project.get("likes", 0),
+            author=author,
         )
         for project in seed_projects
     ])
@@ -91,8 +107,18 @@ def create_project():
         return jsonify({"error": "A non-empty title is required"}), 400
 
     title = title.strip()
+    author = Author.query.filter_by(name=SEEDED_AUTHOR_NAME).first()
+    if author is None:
+        return jsonify({"error": "Seeded author not found"}), 400
+
     next_id = db.session.query(func.coalesce(func.max(Project.id), 0)).scalar() + 1
-    project = Project(id=next_id, title=title, description="", likes=0)
+    project = Project(
+        id=next_id,
+        title=title,
+        description="",
+        likes=0,
+        author=author,
+    )
     db.session.add(project)
     try:
         db.session.commit()
