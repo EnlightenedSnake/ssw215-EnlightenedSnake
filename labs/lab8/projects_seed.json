@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "A 3D game that uses only built in frontend commands",
+    "description": "A 3D game built using only built-in frontend commands.",
+    "likes": 0
+  },
+  {
+    "id": 2,
+    "title": "A RPG style game with selfmade graphics",
+    "description": "An RPG-style game featuring self-made graphics.",
+    "likes": 4
+  },
+  {
+    "id": 3,
+    "title": "A bad game that utilizes a backend to allow for smoother gameplay",
+    "description": "A game using a backend to support smoother gameplay.",
+    "likes": 2
+  },
+  {
+    "id": 4,
+    "title": "A chess application that uses AI to find the best move",
+    "description": "A chess application that utilizes AI to determine the best moves.",
+    "likes": 0
+  },
+  {
+    "id": 5,
+    "title": "Cool guy project",
+    "description": "",
+    "likes": 0
+  }
+]
