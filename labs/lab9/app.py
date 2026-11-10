@@ -1,0 +1,188 @@
+import json
+from pathlib import Path
+
+from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
+
+from ai_service import (
+    ModelRefusalError,
+    ProviderUnavailableError,
+    extract_project_details,
+)
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///portfolio.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
+PROJECTS_SEED_FILE = Path(__file__).with_name("projects_seed.json")
+SEEDED_AUTHOR_NAME = "Jake Mikruk"
+
+
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    projects = db.relationship("Project", backref="author")
+
+
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False, unique=True)
+    description = db.Column(db.String(500), nullable=False, default="")
+    summary = db.Column(db.String(500), nullable=False, default="")
+    technologies = db.Column(db.String(500), nullable=False, default="")
+    likes = db.Column(db.Integer, default=0)
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "summary": self.summary,
+            "technologies": self.technologies,
+            "likes": self.likes,
+            "author": self.author.name,
+        }
+
+
+def init_seed_data():
+    if db.session.query(Project.id).first() is not None:
+        return
+
+    author = Author.query.filter_by(name=SEEDED_AUTHOR_NAME).first()
+    if author is None:
+        author = Author(name=SEEDED_AUTHOR_NAME)
+        db.session.add(author)
+        db.session.flush()
+
+    with PROJECTS_SEED_FILE.open("r", encoding="utf-8") as seed_file:
+        seed_projects = json.load(seed_file)
+
+    db.session.add_all([
+        Project(
+            id=project["id"],
+            title=project["title"],
+            description=project.get("description", ""),
+            summary=project.get("summary", ""),
+            technologies=project.get("technologies", ""),
+            likes=project.get("likes", 0),
+            author=author,
+        )
+        for project in seed_projects
+    ])
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+
+
+with app.app_context():
+    db.create_all()
+    init_seed_data()
+
+
+@app.route("/")
+def index():
+    projects = Project.query.order_by(Project.id).all()
+    return render_template("index.html", projects=projects)
+
+
+@app.route("/api/projects", methods=["GET"])
+def get_projects():
+    projects = Project.query.order_by(Project.id).all()
+    return jsonify([project.to_dict() for project in projects]), 200
+
+
+@app.route("/api/projects/<int:project_id>/upvote", methods=["POST"])
+def upvote_project(project_id):
+    project = db.session.get(Project, project_id)
+    if project is None:
+        return jsonify({"error": "Project not found"}), 404
+
+    project.likes += 1
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Unable to update project"}), 400
+    return jsonify({"id": project_id, "likes": project.likes})
+
+
+@app.route("/api/projects", methods=["POST"])
+def create_project():
+    data = request.get_json(silent=True)
+    title = data.get("title") if isinstance(data, dict) else None
+    if not isinstance(title, str) or not title.strip():
+        return jsonify({"error": "A non-empty title is required"}), 400
+
+    title = title.strip()
+    author = Author.query.filter_by(name=SEEDED_AUTHOR_NAME).first()
+    if author is None:
+        return jsonify({"error": "Seeded author not found"}), 400
+
+    next_id = db.session.query(func.coalesce(func.max(Project.id), 0)).scalar() + 1
+    project = Project(
+        id=next_id,
+        title=title,
+        description="",
+        summary="",
+        technologies="",
+        likes=0,
+        author=author,
+    )
+    db.session.add(project)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "A project with that title already exists"}), 400
+    return jsonify(project.to_dict()), 201
+
+
+@app.route("/api/projects/smart", methods=["POST"])
+def smart_create_project():
+    data = request.get_json(silent=True)
+    notes = data.get("notes") if isinstance(data, dict) else None
+    if not isinstance(notes, str) or len(notes.strip()) < 20:
+        return jsonify({"error": "At least 20 characters of notes are required"}), 400
+
+    try:
+        details = extract_project_details(notes.strip())
+    except ModelRefusalError as error:
+        return jsonify({"error": str(error)}), 422
+    except ProviderUnavailableError as error:
+        return jsonify({"error": str(error)}), 503
+
+    author = Author.query.filter_by(name=SEEDED_AUTHOR_NAME).first()
+    if author is None:
+        return jsonify({"error": "Seeded author not found"}), 400
+
+    next_id = db.session.query(func.coalesce(func.max(Project.id), 0)).scalar() + 1
+    project = Project(
+        id=next_id,
+        title=details.title.strip(),
+        description="",
+        summary=details.summary.strip(),
+        technologies=", ".join(technology.strip() for technology in details.technologies),
+        likes=0,
+        author=author,
+    )
+    db.session.add(project)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "A project with that title already exists"}), 400
+    return jsonify(project.to_dict()), 201
+
+
+@app.route("/assets/avatar.png")
+def avatar():
+    return send_from_directory(app.static_folder, "assets/avatar.png")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
