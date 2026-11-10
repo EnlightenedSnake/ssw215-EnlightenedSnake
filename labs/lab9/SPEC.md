@@ -108,11 +108,11 @@ visible to the console with console.log.
 - [X] Deleting instance/portfolio.db and restarting rebuilds both tables with the seed data.
 - [X] Author's name is visible on each card. <!-- written by JM -->
 - [X] Author's name is included for each project when opening http://127.0.0.1:5000/api/projects <!-- written by JM -->
-- [ ] .env is ignored by Git and never appears in git status.
-- [ ] Pasting a paragraph of notes and pressing Smart create adds a project with a title, a summary and a technologies list.
-- [ ] /api/projects shows the new project with all three fields filled in.
-- [ ] Notes shorter than 20 characters come back as 400, and nothing is sent to the provider.
-- [ ] Deleting instance/portfolio.db and restarting rebuilds the table with the new columns.
+- [X] .env is ignored by Git and never appears in git status.
+- [X] Pasting a paragraph of notes and pressing Smart create adds a project with a title, a summary and a technologies list.
+- [X] /api/projects shows the new project with all three fields filled in.
+- [X] Notes shorter than 20 characters come back as 400, and nothing is sent to the provider.
+- [X] Deleting instance/portfolio.db and restarting rebuilds the table with the new columns.
 
 ## 5. Audit Protocol
 - Inspect the generated code line by line with `git diff --staged` before committing.
