@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jake Mikruk | Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </head>
+  <body class="page">
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="nav-link" href="#projects">Projects</a>
+        <a class="nav-link" href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="container hero-layout">
+          <img class="avatar" src="./assets/avatar.png" alt="Jake Mikruk" />
+
+          <div class="hero-copy">
+            <h1 class="heading heading-primary" id="hero-heading">Jake Mikruk</h1>
+            <p class="subtitle">
+              I am a software engineering undergraduate studying at Stevens
+              Institute of Technology.
+            </p>
+            <p class="bio">
+              I am excited to learn more about current software engineering
+              practices along with growing my capabilities as a software
+              engineer. Alongside, I am a avid fan of tennis, skiing, running,
+              and of course coding.
+            </p>
+            <div class="button-group">
+              <a class="button" href="#projects">See my projects</a>
+              <button class="button secondary-button" type="button" disabled>
+                Contact me (coming soon)
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main class="site-main">
+      <section class="projects" id="projects" aria-labelledby="projects-heading">
+        <div class="container">
+          <h2 class="heading heading-section" id="projects-heading">Projects</h2>
+
+          <div class="filter-row">
+            <label class="filter-label" for="filter-input">Filter projects</label>
+            <input class="filter-input" id="filter-input" type="text" />
+          </div>
+
+          <div class="filter-row">
+            <label class="filter-label" for="smart-notes">Project notes</label>
+            <textarea class="filter-input" id="smart-notes" rows="5"></textarea>
+            <button class="button" id="smart-create" type="button">Smart create</button>
+          </div>
+
+          <section class="github-import" aria-labelledby="github-import-heading">
+            <h3 class="heading heading-card" id="github-import-heading">Import from GitHub</h3>
+            <form class="filter-row" id="github-import-form">
+              <label class="filter-label" for="repo-owner">Repository owner</label>
+              <input class="filter-input" id="repo-owner" name="owner" type="text" required />
+              <label class="filter-label" for="repo-name">Repository name</label>
+              <input class="filter-input" id="repo-name" name="repo" type="text" required />
+              <button class="button" id="fetch-github-draft" type="submit">Fetch draft</button>
+            </form>
+            <p id="github-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <section
+            class="github-draft hidden"
+            id="github-draft"
+            aria-labelledby="github-draft-heading"
+          >
+            <h3 class="heading heading-card" id="github-draft-heading">Project draft</h3>
+            <div class="github-draft-fields">
+              <p><strong>Title:</strong> <span id="github-draft-title"></span></p>
+              <p><strong>Summary:</strong> <span id="github-draft-summary"></span></p>
+              <p><strong>Technologies:</strong> <span id="github-draft-technologies"></span></p>
+              <p><strong>Difficulty:</strong> <span id="github-draft-difficulty"></span></p>
+            </div>
+            <div class="filter-row">
+              <label class="filter-label" for="github-feedback">Feedback</label>
+              <textarea class="filter-input" id="github-feedback" rows="3"></textarea>
+              <div class="github-draft-actions">
+                <button class="button" id="send-github-feedback" type="button">Send feedback</button>
+                <button class="button" id="approve-github-draft" type="button">Approve and save</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="filter-row">
+            <label class="filter-label" for="new-title">New project title</label>
+            <input class="filter-input" id="new-title" type="text" />
+            <button class="button" id="add-project" type="button">Add project</button>
+          </div>
+
+          <p class="project-count" id="project-count" aria-live="polite">
+            Showing {{ projects|length }} of {{ projects|length }} projects
+          </p>
+
+          <div class="card-grid" id="project-list">
+            {% for project in projects %}
+            <article class="card" data-project-id="{{ project.id }}">
+              <h3 class="heading heading-card">{{ project.title }}</h3>
+              <p>{{ project.summary or project.description }}</p>
+              {% if project.technologies %}
+              <p>Technologies: {{ project.technologies }}</p>
+              {% endif %}
+              {% if project.difficulty %}
+              <p>Difficulty: {{ project.difficulty }}</p>
+              {% endif %}
+              <p>Author: {{ project.author.name }}</p>
+              {% if project.likes > 10 %}
+              <span class="badge">Trending</span>
+              {% endif %}
+              <p>Likes: <span class="like-count">{{ project.likes }}</span></p>
+              <button class="upvote-btn button" type="button">Upvote</button>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <section class="social" aria-labelledby="social-heading">
+        <div class="container">
+          <h2 class="heading heading-section" id="social-heading">GitHub</h2>
+          <a class="social-link" href="https://github.com/EnlightenedSnake" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </section>
+    </footer>
+  </body>
+</html>
