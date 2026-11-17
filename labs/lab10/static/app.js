@@ -10,6 +10,7 @@ const githubDraftPanel = document.getElementById('github-draft');
 const githubStatus = document.getElementById('github-status');
 const githubFeedbackInput = document.getElementById('github-feedback');
 const sendGithubFeedbackButton = document.getElementById('send-github-feedback');
+const sendGithubFeedbackBlindButton = document.getElementById('send-github-feedback-blind');
 const approveGithubDraftButton = document.getElementById('approve-github-draft');
 let githubSessionId = null;
 
@@ -223,6 +224,7 @@ if (githubImportForm && githubDraftPanel && githubStatus) {
       const result = await response.json();
       githubSessionId = result.session_id;
       showGithubDraft(result.draft);
+      approveGithubDraftButton.disabled = false;
       githubStatus.textContent = '';
     } catch (error) {
       githubStatus.textContent = 'Unable to fetch a project draft. Check the repository and try again.';
@@ -238,6 +240,7 @@ if (
   githubStatus &&
   githubFeedbackInput &&
   sendGithubFeedbackButton &&
+  sendGithubFeedbackBlindButton &&
   approveGithubDraftButton
 ) {
   sendGithubFeedbackButton.addEventListener('click', async () => {
@@ -264,6 +267,7 @@ if (
       const draft = await response.json();
       showGithubDraft(draft);
       githubFeedbackInput.value = '';
+      approveGithubDraftButton.disabled = false;
     } catch (error) {
       githubStatus.textContent = 'Unable to update the draft. Please try again.';
       console.error('Unable to refine GitHub project draft:', error);
@@ -301,6 +305,40 @@ if (
       console.error('Unable to approve GitHub project draft:', error);
     } finally {
       approveGithubDraftButton.disabled = false;
+    }
+  });
+
+  sendGithubFeedbackBlindButton.addEventListener('click', async () => {
+    if (!githubSessionId) {
+      return;
+    }
+
+    sendGithubFeedbackBlindButton.disabled = true;
+    githubStatus.textContent = '';
+    try {
+      const response = await fetch('/api/projects/git-refine-blind', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: githubSessionId,
+          feedback: githubFeedbackInput.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Blind draft refinement failed with status ${response.status}`);
+      }
+
+      const draft = await response.json();
+      showGithubDraft(draft);
+      githubFeedbackInput.value = '';
+      approveGithubDraftButton.disabled = true;
+      githubStatus.textContent = 'This preview was refined without history and is display-only.';
+    } catch (error) {
+      githubStatus.textContent = 'Unable to refine the draft without history. Please try again.';
+      console.error('Unable to refine GitHub project draft without history:', error);
+    } finally {
+      sendGithubFeedbackBlindButton.disabled = false;
     }
   });
 }

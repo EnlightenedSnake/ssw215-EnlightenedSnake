@@ -114,6 +114,10 @@ def refine_github_session(
     return draft
 
 
+def refine_github_draft_without_history(feedback: str) -> GitHubProjectDraft:
+    return _request_github_draft([{"role": "user", "content": feedback}])
+
+
 def extract_project_details(notes: str) -> ProjectDetails:
     if client is None:
         raise ProviderUnavailableError("The AI provider is not configured")

@@ -13,6 +13,7 @@ from ai_service import (
     SessionNotFoundError,
     extract_project_details,
     get_github_draft,
+    refine_github_draft_without_history,
     refine_github_session,
     start_github_session,
 )
@@ -259,6 +260,29 @@ def refine_github_import():
         draft = refine_github_session(session_id, feedback)
     except SessionNotFoundError as error:
         return jsonify({"error": str(error)}), 404
+    except ModelRefusalError as error:
+        return jsonify({"error": str(error)}), 422
+    except ProviderUnavailableError as error:
+        return jsonify({"error": str(error)}), 503
+    return jsonify(draft.model_dump()), 200
+
+
+@app.route("/api/projects/git-refine-blind", methods=["POST"])
+def refine_github_import_blind():
+    data = request.get_json(silent=True)
+    session_id = data.get("session_id") if isinstance(data, dict) else None
+    feedback = data.get("feedback") if isinstance(data, dict) else None
+    if not isinstance(session_id, str) or not session_id:
+        return jsonify({"error": "A session_id is required"}), 400
+    try:
+        get_github_draft(session_id)
+    except SessionNotFoundError as error:
+        return jsonify({"error": str(error)}), 404
+    if not isinstance(feedback, str):
+        return jsonify({"error": "Feedback must be a string"}), 400
+
+    try:
+        draft = refine_github_draft_without_history(feedback)
     except ModelRefusalError as error:
         return jsonify({"error": str(error)}), 422
     except ProviderUnavailableError as error:

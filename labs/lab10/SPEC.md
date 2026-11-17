@@ -112,6 +112,10 @@ visible to the console with console.log.
 - A session_id that is not in the dictionary MUST be answered with status code 404.
 - A repository GitHub does not return MUST be answered with 404, and a README shorter than 20 characters with 400. Neither case MUST reach the provider.
 - A project MUST appear in the list on the page, and in /api/projects, only after it has been approved.
+- POST /api/projects/git-refine-blind MUST accept "session_id" and "feedback" and MUST return a draft with status code 200.
+- The request it sends to the provider MUST contain the feedback text and nothing else: no README, no earlier draft, and no earlier turn of the conversation.
+- It MUST NOT change the stored session, and MUST NOT write to the database. Its answer is for display only.
+- The draft panel MUST have a second button labelled "Refine without history" beside "Send feedback".
 
 ## 4. Acceptance Checklist
 - [X] Starting the server creates instance/portfolio.db, and the page shows the projects that were in projects_seed.json.
@@ -129,15 +133,12 @@ visible to the console with console.log.
 - [X] /api/projects shows the new project with all three fields filled in.
 - [X] Notes shorter than 20 characters come back as 400, and nothing is sent to the provider.
 - [X] Deleting instance/portfolio.db and restarting rebuilds the table with the new columns.
-- [ ] .env holds two secrets and still never appears in git status.
-- [ ] Typing an owner and a repo and pressing Fetch draft shows a draft with all four
-fields.
-- [ ] Sending feedback changes the draft on the page and leaves /api/projects unchanged.
-- [ ] Approve and save adds the project to /api/projects.
-- [ ] A repository name that does not exist comes back as 404 and nothing is sent to the
-provider.
-- [ ] Deleting instance/portfolio.db and restarting rebuilds the table with the
-difficulty column.
+- [X] .env holds two secrets and still never appears in git status.
+- [X] Typing an owner and a repo and pressing Fetch draft shows a draft with all four fields.
+- [X] Sending feedback changes the draft on the page and leaves /api/projects unchanged.
+- [X] Approve and save adds the project to /api/projects.
+- [X] A repository name that does not exist comes back as 404 and nothing is sent to the provider.
+- [X] Deleting instance/portfolio.db and restarting rebuilds the table with the difficulty column.
 
 ## 5. Audit Protocol
 - Inspect the generated code line by line with `git diff --staged` before committing.
