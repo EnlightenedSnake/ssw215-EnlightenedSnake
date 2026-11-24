@@ -142,3 +142,6 @@ visible to the console with console.log.
 
 ## 5. Audit Protocol
 - Inspect the generated code line by line with `git diff --staged` before committing.
+## 6. Verification
+- V1 — The function that fetches a README (fetch_repository_readme) MUST return at most 4000 characters, however long the README it receives is, and MUST be provable without a network request.
+This rule MUST have a test that fails when the behaviour it names is removed.
