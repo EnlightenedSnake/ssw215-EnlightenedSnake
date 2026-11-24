@@ -35,4 +35,4 @@ def fetch_repository_readme(owner: str, repository: str) -> str:
     if not response.ok:
         raise GitHubUnavailableError("GitHub could not fetch the README")
 
-    return response.text[:4000]
+    return response.text[:400000]
